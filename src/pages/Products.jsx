@@ -1,17 +1,48 @@
+import React, { useState } from "react";
 import Loading from "@/components/Loading";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { ProductData } from "@/context/ProductContext";
 import { Filter, X } from "lucide-react";
-import React, { useState } from "react";
+import { ProductData } from "@/context/ProductContext";
+
+const PaginationControls = ({ page, totalPages, setPage }) => {
+  const prevPage = () => page > 1 && setPage(page - 1);
+  const nextPage = () => page < totalPages && setPage(page + 1);
+
+  return (
+    <nav
+      aria-label="Pagination Navigation"
+      className="flex justify-center items-center space-x-2 mt-6 mb-3"
+    >
+      <button
+        onClick={prevPage}
+        disabled={page === 1}
+        className={`px-3 py-1 rounded-md border ${page === 1
+          ? "border-gray-300 text-gray-400 cursor-not-allowed"
+          : "border-blue-600 text-blue-600 hover:bg-blue-100"
+          }`}
+        aria-label="Previous page"
+      >
+        Prev
+      </button>
+      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Page {page} of {totalPages}
+      </span>
+      <button
+        onClick={nextPage}
+        disabled={page === totalPages}
+        className={`px-3 py-1 rounded-md border ${page === totalPages
+          ? "border-gray-300 text-gray-400 cursor-not-allowed"
+          : "border-blue-600 text-blue-600 hover:bg-blue-100"
+          }`}
+        aria-label="Next page"
+      >
+        Next
+      </button>
+    </nav>
+  );
+};
 
 const Products = () => {
   const [show, setShow] = useState(false);
@@ -37,31 +68,25 @@ const Products = () => {
     setPage(1);
   };
 
-  const nextPage = () => {
-    setPage(page + 1);
-  };
-  const prevPage = () => {
-    setPage(page - 1);
-  };
   return (
     <div className="flex flex-col md:flex-row h-full">
+      {/* Sidebar Filters */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 md:z-40 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
-          show ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 md:z-40 w-4/5 max-w-xs md:w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${show ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
-        <div className="p-4 relative">
+        <div className="p-4 relative h-full overflow-y-auto">
           <button
             onClick={() => setShow(false)}
             className="absolute top-4 right-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-full p-2 md:hidden"
           >
             <X />
           </button>
-          <h2 className="text-lg font-bold mb-2">Filters</h2>
+          <h2 className="text-lg font-bold mb-4">Filters</h2>
+
+          {/* Search */}
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">
-              Search Title
-            </label>
+            <label className="block text-sm font-medium mb-2">Search Title</label>
             <Input
               type="text"
               placeholder="Search Title"
@@ -71,6 +96,7 @@ const Products = () => {
             />
           </div>
 
+          {/* Category */}
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Category</label>
             <select
@@ -79,16 +105,15 @@ const Products = () => {
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="">All</option>
-              {categories.map((e) => {
-                return (
-                  <option value={e} key={e}>
-                    {e}
-                  </option>
-                );
-              })}
+              {categories.map((cat) => (
+                <option value={cat} key={cat}>
+                  {cat}
+                </option>
+              ))}
             </select>
           </div>
 
+          {/* Price */}
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Price</label>
             <select
@@ -102,51 +127,41 @@ const Products = () => {
             </select>
           </div>
 
-          <Button className="mt-2" onClick={clearFilter}>
+          {/* Clear Filters */}
+          <Button className="mt-2 w-full" onClick={clearFilter}>
             Clear Filter
           </Button>
         </div>
       </div>
 
+      {/* Products Section */}
       <div className="flex-1 p-4">
+        {/* Toggle Filter on Small Screens */}
         <button
           onClick={() => setShow(true)}
           className="md:hidden bg-blue-500 text-white px-4 py-2 rounded-md mb-4"
         >
-          <Filter />
+          <Filter className="inline mr-2" /> Filters
         </button>
 
+        {/* Responsive Product Grid with uniform gap */}
         {loading ? (
           <Loading />
         ) : (
-          <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
             {products && products.length > 0 ? (
-              products.map((e) => {
-                return <ProductCard key={e._id} product={e} latest={"no"} />;
-              })
+              products.map((product) => (
+                <ProductCard key={product._id} product={product} latest="no" />
+              ))
             ) : (
-              <p>No Products Yet</p>
+              <p className="text-center col-span-full">No Products Yet</p>
             )}
           </div>
+
         )}
 
-        <div className="mt-2 mb-3">
-          <Pagination>
-            <PaginationContent>
-              {page !== 1 && (
-                <PaginationItem className="cursor-pointer" onClick={prevPage}>
-                  <PaginationPrevious />
-                </PaginationItem>
-              )}
-
-              {page !== totalPages && (
-                <PaginationItem className="cursor-pointer" onClick={nextPage}>
-                  <PaginationNext />
-                </PaginationItem>
-              )}
-            </PaginationContent>
-          </Pagination>
-        </div>
+        {/* Pagination Controls */}
+        <PaginationControls page={page} totalPages={totalPages} setPage={setPage} />
       </div>
     </div>
   );

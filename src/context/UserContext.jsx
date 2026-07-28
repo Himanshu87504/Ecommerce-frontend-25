@@ -44,7 +44,7 @@ export const UserProvider = ({ children }) => {
 
       Cookies.set("token", data.token, {
         expires: 15,
-        secure: true,
+        secure: window.location.protocol === "https:",
         path: "/",
       });
 
@@ -74,7 +74,7 @@ export const UserProvider = ({ children }) => {
   }
 
   function logoutUser(navigate, setTotalItem) {
-    Cookies.set("token", null);
+    Cookies.remove("token", { path: "/" });
     setUser([]);
     setIsAuth(false);
     navigate("/login");

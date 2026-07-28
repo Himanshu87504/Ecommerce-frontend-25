@@ -18,23 +18,23 @@ const PaginationControls = ({ page, totalPages, setPage }) => {
       <button
         onClick={prevPage}
         disabled={page === 1}
-        className={`px-3 py-1 rounded-md border ${page === 1
-          ? "border-gray-300 text-gray-400 cursor-not-allowed"
-          : "border-blue-600 text-blue-600 hover:bg-blue-100"
+        className={`px-3 py-1 rounded-full border transition-colors ${page === 1
+          ? "border-border text-muted-foreground cursor-not-allowed"
+          : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
           }`}
         aria-label="Previous page"
       >
         Prev
       </button>
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+      <span className="text-sm font-medium text-muted-foreground">
         Page {page} of {totalPages}
       </span>
       <button
         onClick={nextPage}
         disabled={page === totalPages}
-        className={`px-3 py-1 rounded-md border ${page === totalPages
-          ? "border-gray-300 text-gray-400 cursor-not-allowed"
-          : "border-blue-600 text-blue-600 hover:bg-blue-100"
+        className={`px-3 py-1 rounded-full border transition-colors ${page === totalPages
+          ? "border-border text-muted-foreground cursor-not-allowed"
+          : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
           }`}
         aria-label="Next page"
       >
@@ -72,35 +72,35 @@ const Products = () => {
     <div className="flex flex-col md:flex-row h-full">
       {/* Sidebar Filters */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 md:z-40 w-4/5 max-w-xs md:w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${show ? "translate-x-0" : "-translate-x-full"
+        className={`fixed inset-y-0 left-0 z-50 md:z-40 w-4/5 max-w-xs md:w-64 bg-card border-r shadow-lg md:shadow-none transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${show ? "translate-x-0" : "-translate-x-full"
           }`}
       >
-        <div className="p-4 relative h-full overflow-y-auto">
+        <div className="p-5 relative h-full overflow-y-auto">
           <button
             onClick={() => setShow(false)}
-            className="absolute top-4 right-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-full p-2 md:hidden"
+            className="absolute top-4 right-4 bg-secondary text-foreground rounded-full p-2 md:hidden"
           >
-            <X />
+            <X className="h-4 w-4" />
           </button>
-          <h2 className="text-lg font-bold mb-4">Filters</h2>
+          <h2 className="font-display text-lg font-bold mb-5">Filters</h2>
 
           {/* Search */}
-          <div className="mb-4">
+          <div className="mb-5">
             <label className="block text-sm font-medium mb-2">Search Title</label>
             <Input
               type="text"
               placeholder="Search Title"
-              className="w-full p-2 border rounded-full"
+              className="w-full rounded-full"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
 
           {/* Category */}
-          <div className="mb-4">
+          <div className="mb-5">
             <label className="block text-sm font-medium mb-2">Category</label>
             <select
-              className="w-full p-2 border rounded-md dark:bg-gray-900 dark:text-white"
+              className="w-full p-2 border rounded-md bg-background text-foreground"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
@@ -114,10 +114,10 @@ const Products = () => {
           </div>
 
           {/* Price */}
-          <div className="mb-4">
+          <div className="mb-5">
             <label className="block text-sm font-medium mb-2">Price</label>
             <select
-              className="w-full p-2 border rounded-md dark:bg-gray-900 dark:text-white"
+              className="w-full p-2 border rounded-md bg-background text-foreground"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
             >
@@ -128,20 +128,20 @@ const Products = () => {
           </div>
 
           {/* Clear Filters */}
-          <Button className="mt-2 w-full" onClick={clearFilter}>
+          <Button variant="outline" className="mt-2 w-full" onClick={clearFilter}>
             Clear Filter
           </Button>
         </div>
       </div>
 
       {/* Products Section */}
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-4 sm:p-6">
         {/* Toggle Filter on Small Screens */}
         <button
           onClick={() => setShow(true)}
-          className="md:hidden bg-blue-500 text-white px-4 py-2 rounded-md mb-4"
+          className="md:hidden flex items-center bg-primary text-primary-foreground px-4 py-2 rounded-full mb-4 text-sm font-medium"
         >
-          <Filter className="inline mr-2" /> Filters
+          <Filter className="inline mr-2 h-4 w-4" /> Filters
         </button>
 
         {/* Responsive Product Grid with uniform gap */}
